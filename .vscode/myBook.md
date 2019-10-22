@@ -19,7 +19,7 @@ Python 是一种解释型、面向对象、动态数据类型的高级程序设�
 
 <img src="../mdSrc/python_download_Packages.png" width="800"></img>
  
-Python可应用于多平台包括 Linux 和 Mac OS X。可以通过终端窗口输入 "python" 命令来查看本地是否已经安装Python以及Python的安装版本。官网提供了不同操作系统下多种安装包，可以通过安装器installer安装，也可以直接下载压缩包安装。Unix & Linux 平台安装和其他[安装细节](https://www.runoob.com/python/python-install.html)可参考菜鸟。
+Python可应用于多平台包括 Linux 和 Mac OS X。官网提供了不同操作系统下多种安装包，可以通过安装器installer安装，也可以直接下载压缩包安装。Unix & Linux 平台安装和其他[安装细节](https://www.runoob.com/python/python-install.html)可参考菜鸟。
 ### 1.2.	Windows环境变量的配置
 程序和可执行文件可以在许多目录，而这些路径很可能不在操作系统提供可执行文件的搜索路径中。path(路径)存储在环境变量中，这是由操作系统维护的一个命名的字符串。这些变量包含可用的命令行解释器和其他程序的信息。可以简单的理解为使用一个变量来保存python执行文件的路径，在任何地方使用命令行解析器（CMD）都可以调用python的命令。
 #### 1.2.1.	 命令行添加
