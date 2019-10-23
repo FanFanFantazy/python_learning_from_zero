@@ -1,3 +1,4 @@
-me = 'hungry'
-if me == 'hungry':
-    print('Eat a pie!')
+john = 'man'
+ada = 'woman'
+gender = ['man', 'woman', 'LGBT', 'cant tell']
+print(john in gender)

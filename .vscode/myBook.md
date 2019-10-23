@@ -1,11 +1,11 @@
  
 # Python 从0开始
 ## 0. 前言
-这个教程完全目的在于让完全没有接触过编程的同学快速运用Python，其中加入了很多粗浅的解释和模糊的描述，旨在让没有完全编程基础的同学快速理解，省略了很多底层解析。同时加入了一些不恰当的比喻，为了增加记忆点，简化过程直奔主题。作者也是完全从0开始自学，一些不恰当的理解在所难免。为了避免误人子弟，还是要参考Python[官方文档](https://docs.python.org/3/)进行学习。有任何错误的解释，欢迎提出pull request。
+这个心得目的在于让完全没有接触过编程的同学快速运用Python，其中加入了很多粗浅的解释和模糊的描述，旨在让没有完全编程基础的同学快速理解，省略了很多底层解析。同时会有一些不恰当的比喻，为了增加记忆点，简化过程直奔主题。作者也是完全从0开始自学，一些不恰当的理解在所难免。为了避免误人子弟，还是要参考Python[官方文档](https://docs.python.org/3/)进行学习。有任何错误的解释，欢迎提出pull request。
 
-教程中涉及到的例子都是经过本人实践的，可直接复制粘贴，也可git拉取运行。关于Git和Markdown的使用方法，后期会进行整理。
+其中中涉及到的例子都是经过实践的，可直接复制，也可git拉取运行。关于Git和Markdown的使用方法，后期会进行整理。
 
-**本教程参考许多国内外论坛，如有侵权，请及时指出！**
+**撰写过程中参考许多国内外论坛，如有侵权，请及时指出！**
 
 ## 1.	Windows + Python 3 + VS Code 环境搭建
 ### 1.1.	Python 3 环境搭建
@@ -198,7 +198,251 @@ Congratulation!我们已经成功运行了第一个Python程序。
           print('Eat a pie!')
       ```
       print的内容属于```if```这个块内的代码，只有当```me```等于```'hungry'```时触发。
-#### 2.1.2. Python 基础语法要点
+#### 2.1.2. Python 浅尝
+1. import 和 from import  
+  我们在写代码的过程中，有时候需要用到多种类型的文件和脚本。我们不可能把全部内容放到同一个文件中。想要调用其他文件中内容，我们可以运用```import``` 和 ```from xxx import xxx```
+
+    + import A  - 导入整个模块A
+    + from B import A - 导入 B 模块中的 A 方法
+    + from B import A, C, D - 导入 B 模块中 A, C, D 三个方法
+    ```
+    from sys import argv
+    print(argv)
+    ```
+    ```
+    import sys
+    print(sys.argv)
+    ```
+    两个例子效果相同，此处我们引用了系统模块中的一个方法叫argv（argv可以理解为python脚本的输入参数列表）
+2. 变量和赋值  
+    + 变量 - 可以变化的量，除保留字符外任意命名。对大小写敏感暨区分大小写。一般遵守驼峰式命名。如```myPhone、applePie、 johnSmith```
+    + = - 赋值暨等号右侧的值赋给左侧变量
+    ```
+    dinner = 'chicken fried rice'
+    # dinner变量是一个叫 chicken fried rice的字符串
+
+    breakfast = lunch = dinner = 'banana'
+    # 变量breakfast和lunch和dinner 都等于 字符串 apple
+    
+    breakfast, lunch, dinner = 'pizza', 'double cheese hamburger', 'big mac'
+    # 变量breakfast等于pizza，lunch等于double cheese hamburger，dinner等于big mac
+    ```
+3. 标准数据类型  
+    + Number（数字）包括 int(整数)、float(小数)、bool(True或False)、complex(复数)四种类型
+      ```
+      num = 4+3j
+      print(type(num))
+      # 打印num的类型
+
+      print(isinstance(num, complex))
+      # 打印判断num是不是complex类型的结果
+      # type()不会认为子类是一种父类类型
+      # isinstance()会认为子类是一种父类类型（父子类的概念在后面章节会讲解）
+      ```
+      得到
+      ```
+      <class 'complex'>
+      True
+      ```
+      True的值为1，False的值为0，在python中True/False可以直接与数字进行运算
+
+    + String（字符串）
+      可以理解为一段文字，用 **'** 或 **"** 包裹。  
+      运算符：
+      符号 |  描述  
+        -|-
+        \+ | 拼接
+        \* | 复制
+        \ | 转义
+      ```
+      print(('\nHello' + '\n' + 'World!') * 2)
+      ```
+      得到
+      ```
+      
+      Hello
+      World!
+      Hello
+      World!
+      ```
+
+      如果不想转义 在字符串前加 **r** 即可
+
+      ```
+      print('first line\n second line')
+      #\n 为换行符号
+      
+      print(r'first line\n second line')
+      # \n 为字符串
+      ```
+      得到
+      ```
+      first line
+       second line
+      first line\n second line
+      ```
+      截取字符串：python中的位置索引是从0开始的，一个字符串的首字母暨在第0位上，截取写法例如：
+      ```
+      index = 'abcdefg'
+      print(index[0:-1])    #  第一个到倒数第二个个字符 abcdef
+      print(index[0])       #  第一个字符 a
+      print(index[2:5])     #  第三个到第五个的字符 cde
+      print(index[2:])      #  第三个后所有字符 cdefg
+      ```
+      Python中字符串不能被改变，因此```word[0] = 'm'```这种写法是错误的，可以对变量重新赋值来进行更改。
+    + List（列表）
+      顾名思义，一维列表可以想象成一行数据的有序集合，用 **[]** 包裹，如```list = [abc, 123, 'abc', True]```。列表中每个元素可以是任意类型数据，且有位置索引（从0开始）。```list[0]```标识list中第一位的元素，是一个叫```abc```的变量。同理```list[2]```是一个字符串，它的值是```abc```。  
+      由于列表中可以嵌套列表，因此列表可以是多维的，如```list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]```表示的是一个二维列表
+        ||||
+        -|-|-
+        1|2|3
+        4|5|6
+        7|8|9
+      那么```list[1][1]```就是```5```。同样列表也可以用```+``` 和```*```进行运算，原理和字符串相似，结果是一个较高维度的新数组
+      ```
+      list = [1, 1, 1]
+      list2 = [[2.1, 2.1, 2.1], [2.2, 2.2, 2.2]]
+      print(list + list2)
+      # 得到 [1, 1, 1, [2.1, 2.1, 2.1], [2.2, 2.2, 2.2]]
+      ```
+      列表的截取方式和字符串相同，不同的是，列表中元素可以被替换，如:
+      ```
+      list = ['Tim', 'Will', 'Lee']
+      list[1] = 'John'
+      print(list)
+
+      #得到:['Tim', 'John', 'Lee']
+      ```
+    + Tuple（元组）
+      与列表类似，区别是元组中的元素不可修改，用 **()**包裹
+    + Set（集合）  
+      集合（set）是由一个或数个形态各异的大小整体组成的，构成集合的事物或对象称作元素。用 **{}** 包裹。注意，在创建空集合是需要使用 ```set()```, 而不是 ```{}```。与数学上的集合相似，集合中元素是无序且会自动去重，其运算方式也是符合数学逻辑的。
+      ```
+      ageSet = {28, 26, 28, 27, 32, 33, 26}
+      print(ageSet)
+
+      # 得到 {32, 33, 26, 27, 28}
+      ```
+      运算符：
+      符号 |  描述  
+        -|-
+        \- | 差集
+        \| | 并集
+        & | 交际
+        ^ | 非交集
+      ```
+      ageSet1 = {28, 26, 28, 27, 32, 33, 26}
+      ageSet2 = {25, 26, 24, 30, 33, 29, 28}
+      print(ageSet1 - ageSet2)   # {32, 27}
+      print(ageSet1 | ageSet2)   # {32, 33, 24, 25, 26, 27, 28, 29, 30}
+      print(ageSet1 & ageSet2)   # {33, 26, 28}
+      print(ageSet1 ^ ageSet2)   # {32, 24, 25, 27, 29, 30}
+      ```
+    + Dictionary（字典）
+      字典可以想象成是一种key-value形式的无序集合，用 **{}** 包裹，也可以用```dict()````定义。和现实中的字典相似，要找到一个字(value)，首先我们要知道一个拼音或者偏旁部首(key)。在一个字典中key值是唯一的，因此通过一个key就必定能找到一个value，即使是空值。
+      ```
+      foodMenu = {
+          'appetiser': ['salad', 'bread', 'butter'],
+          'mainCourse': ['lambShank'],
+          'desert': 'teaCake'
+          }
+      print(foodMenu['mainCourse'])  #  ['lambShank']
+      print(foodMenu.values())  #  dict_values([['salad', 'bread', 'oliver'], ['lambShank'], 'teaCake'])
+      ```
+      和列表相似，字典也可以进行嵌套。为字典增加一个新key可以直接写为```foodMenu['drink'] = 'houseAle'```。同时字典具备 clear(), keys(), values()这样的内置函数。  
+4. 数据转换  
+    参考[菜鸟教程](https://www.runoob.com/python3/python3-data-type.html)   
+    常用方法：
+    |||
+    -|-
+    int(x, base=y) 或 int(x) | 转换成整数。```base=y``` 为该数字为y进制 base有值时 x必须为字符串；base无值时 x 为数字。因此要把16进制的18.2转换成10进制整数```int(str(int(18.2)), base=16)```
+    float(x) | 转换成小数
+    str(x) | 转换成字符串
+    repr(x) | 转换对象成字符串
+    eval(x) | 转换字符串成对象
+5. 运算符号
+  + 运算符
+      符号 |  描述  
+      -|-
+      \+ | 加
+      \- | 减
+      \* | 乘
+      / | 除
+      // | 除，取整, 不四舍五入，除小数后返回**整数.0**如```100//11.1 = 9.0```
+      % | 取余数
+      ** | 乘方
+      & | 且 (二进制)
+      \| | 或 (二进制)
+      ^ | 按位异或 (二进制)
+      ~ | 按位取反 (二进制)
+      << | 按位左移 (二进制)
+      \>> | 按位右移 (二进制)
+  + 比较符
+      符号 |  描述  
+      -|-
+      == | 等于
+      != | 不等于
+      \> | 大于
+      < | 小于
+      <= | 小于等于
+      \>= | 大于等于
+  + 赋值运算符
+    符号 |  描述  
+      -|-
+      = | 赋值
+      += | ```a += b``` 相当于 ```a = a + b```
+      -= | ```a -= b``` 相当于 ```a = a - b```
+      *= | ```a *= b``` 相当于 ```a = a * b```
+      /= | ```a /= b``` 相当于 ```a = a / b```
+      %= | ```a %= b``` 相当于 ```a = a % b```
+      **= | ```a **= b``` 相当于 ```a = a ** b```
+      //= | ```a //= b``` 相当于 ```a = a // b```
+  + 逻辑运算符
+    符号 |  描述  
+      -|-
+      and | 与
+      or | 或
+      not | 非
+  + 身份运算符
+      符号 |  描述  
+      -|-
+      is | 同内存地址
+      is not | 不同内存地址
+      ```
+      john = 'man'
+      tim = 'woman'[2:]
+      print(john is tim)        #  False
+
+      will = 'man'
+      print(john is will)       #  True
+      ```
+  + 身份运算符
+      符号 |  描述  
+      -|-
+      in | 非
+      not in | 非
+
+      ```
+      john = 'man'
+      ada = 'woman'
+      print(john in ada)         #  True
+
+      gender = ['man', 'woman', 'LGBT', 'cant tell']
+      print(john in gender)      #  True
+      ```
+#### 2.1.3. Python 基础语句
+1. 判断
+2. 循环
+3. 迭代与生成
+4. 函数
+5. 数据结构
+6. 模块
+7. 输入与输出
+#### 2.1.4. Python 中级语句
+1. 文件
+2. 类
+3. 标准库
+4. 错误与异常
 ---
 ## 3.	简易的人脸识别
 ---
