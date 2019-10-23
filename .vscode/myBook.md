@@ -417,10 +417,10 @@ Congratulation!我们已经成功运行了第一个Python程序。
       print(john is will)       #  True
       ```
   + 身份运算符
-      符号 |  描述  
-      -|-
-      in | 非
-      not in | 非
+      |符号 |  描述|  
+      |-|-|
+      |in | 非|
+      |not in | 非|
 
       ```
       john = 'man'
