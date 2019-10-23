@@ -416,8 +416,9 @@ Congratulation!我们已经成功运行了第一个Python程序。
       will = 'man'
       print(john is will)       #  True
       ```
-  + 身份运算符     
-      |符号 |  描述|  
+  + 身份运算符   
+  
+      |符号 |描述|  
       |---------|---------|
       |in | 非|
       |not in | 非|
