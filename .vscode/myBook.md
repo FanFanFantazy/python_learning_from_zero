@@ -291,7 +291,17 @@ Congratulation!我们已经成功运行了第一个Python程序。
       print(index[2:5])     #  第三个到第五个的字符 cde
       print(index[2:])      #  第三个后所有字符 cdefg
       ```
-      Python中字符串不能被改变，因此```word[0] = 'm'```这种写法是错误的，可以对变量重新赋值来进行更改。
+      Python中字符串不能被改变，因此```word[0] = 'm'```这种写法是错误的，可以对变量重新赋值来进行更改。   
+
+      常用方法：
+      方法 |  描述  
+        -|-
+        .upper() | 全部大写
+        .lower() | 全部小写
+        .capitalize() | 首字符大写 ```print('chicken fried rice'.capitalize()) ``` 得到 ```Chicken fried rice ```
+        .title() | 每个单词首字母大写```print('chicken fried rice'.title()) ```得到 ```Chicken Fried Rice ```
+
+
     + List（列表）
       顾名思义，一维列表可以想象成一行数据的有序集合，用 **[]** 包裹，如```list = [abc, 123, 'abc', True]```。列表中每个元素可以是任意类型数据，且有位置索引（从0开始）。```list[0]```标识list中第一位的元素，是一个叫```abc```的变量。同理```list[2]```是一个字符串，它的值是```abc```。  
       由于列表中可以嵌套列表，因此列表可以是多维的，如```list = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]```表示的是一个二维列表
@@ -450,13 +460,288 @@ Congratulation!我们已经成功运行了第一个Python程序。
       print(john in gender)      #  True
       ```
 #### 2.1.3. Python 基础语句
-1. 判断
-2. 循环
-3. 迭代与生成
-4. 函数
-5. 数据结构
-6. 模块
-7. 输入与输出
+1. 判断  
+    ```
+    if Condition 1:       #  如果满足条件1，执行1
+      Execution 1
+    elif Condition 2:     #  如果不满足条件1，但满足条件2，执行2
+      Execution 2
+    else:                 #  如果都不满足，执行条件3
+      Execution 3
+    ```
+    if 可单独使用， else 如果不需要执行任何东西，可省略。  
+    + 条件可以用运算符连接，如：> , < , == 等。
+    + 多个条件可以用逻辑运算符连接， 如：and， or， not 等   
+    
+    
+    假设我们需要做一个图书查找的工具。我们来假定一下输入和输出的场景：输入一本书名，查查看这本书是否在我们的图书列表中。  
+    + 我们要定义一个列表来存放我们已记录的书名，如：《权力的游戏》《饥饿游戏》《哈利波特》。那么我们在不适用数据库的情况下需要一个定义列表来存放这些字符串
+    + 我们需要用户手动输入书名，那么我们就要定义一个字符串变量来存放输入值
+    + 输入值可能有三种情况：1. 空值， 2. 匹配到书名， 3. 没有匹配到书名
+    + 为了更好的匹配，我们统一把输入书名和已存在的书名都变成大写字母   
+    
+    分析出了情况，利用判断语句，我们很快就能设计出一个建议的图书查找工具
+
+    ```
+    #  简易图书查找 v0.1
+
+    bookName = input('请输入要查找的书名！\n')
+    bookList = ['GAME OF THRONES', 'THE HUNGER GAMES', 'HARRY POTTER']
+    if not bookName:
+        print('Please inster a book name')
+    elif bookName.upper() in bookList:
+        print('You found ' + bookName.upper())
+    else:
+        print('No this book')
+
+    # not bookName 表示当bookName为空时 为 True
+    ```
+
+2. 循环  
+    利用循环可以帮助我们批量处理数据，尤其是对未知个数的情况经行遍历
+    + while
+      ```
+      while Condition:
+        Execution 1
+      else:
+        Execution 2
+      ```
+      while 表示 **知道不为。。。为止**，可以单独使用，当条件一直为True的时候，无限循环下去。
+      else 为不满足 while条件执行，且只会在循环后执行一次。   
+
+      回看一下我们之前的图书查找工具，我们不难发现，单纯的利用判断语句，只能适用有限次数的查找。查找完成后每次都要重启程序。利用while-else循环我们可以设计出一个无限次查找的工具，直到用户选择退出   
+      + 我们需要直到用户输入特定条件才结束程序，那么while的条件就是当输入值不是exit，循环继续
+      + 当输入exit我们返回结果，程序自动结束
+      + 任何情况返回结果后，我们都希望让客户继续输入
+      + 首次循环我们需要一个书名作为判断条件，因此，有一次输入需要放在循环之前  
+
+      在确定了循环的框架和判断细节后，我们只需要把这两部分拼装嵌套在一起就可以了。
+
+      ```
+      #  简易图书查找 v0.2
+
+      bookList = ['GAME OF THRONES', 'THE HUNGER GAMES', 'HARRY POTTER']
+      bookName = input('请输入要查找的书名！\n')
+      while bookName.lower() != 'exit':
+          if bookName.upper() in bookList:
+              print('You found ' + bookName.upper())
+          elif bookName:
+              print('No this book')
+          bookName = input('请输入要查找的书名！\n')
+      else:
+          print('Exited')
+
+      # bookName 有不等于exit或Exit或EXIT等变形体时循环，每次循环末尾让用户再次输入，以便下次循环使用。
+      # 等于exit变形体则循环结束，打印Exited
+      ```
+
+    + for
+      ```
+      for Condition:
+        Execution 1
+      else:
+        Execution 2
+      ```
+      for 可以单独使用，当条件一直为True的时候，无限循环下去。else 为不满足 for 条件执行，且只会在循环后执行一次。for和while在逻辑上基本没有区别。由于条件的不同，for一般用于有限循环，while一般用于无限或不知道是不是无限的循环使用。
+
+      回看我们的图书查找工具，我们可能希望限制不同身份用户的查找次数，那么我们可以利用for循环来轻松解决，有限的判断
+
+      ```
+      #  简易图书查找 v0.3
+      roleList = {'title': ['admin', 'user'], 'auth': [5, 3]}
+      bookList = ['GAME OF THRONES', 'THE HUNGER GAMES', 'HARRY POTTER']
+      roleName = input('请输入权限代码！\n')
+      times = 0
+      counter = 0
+      for i in range(0, roleList['title'].__len__()):
+          #  .__len__()为求列表长度的方法，也可以用len(roleList['title'])代替
+          # i in range(0, 10) 暨 i为从0到10的数字，i每次循环默认加1 知道大于10，循环结束
+          if roleName == roleList['title'][i]:
+              times = roleList['auth'][i]
+          else:
+              counter += 1
+      else:
+          if counter == roleList['title'].__len__():
+              print('无权限访问！')
+          else:
+              bookName = input('请输入要查找的书名！\n')
+              searchCounter = 1
+              while bookName.lower() != 'exit' and searchCounter < times:
+                  if bookName.upper() in bookList:
+                      print('You found ' + bookName.upper())
+                  elif bookName:
+                      print('No this book')
+                  bookName = input('请输入要查找的书名！\n')
+                  searchCounter += 1
+              else:
+                  print('Exited')
+
+      ```
+
+      这个例子是一种复杂冗余的写法，其目的是为了展示循环判断之间的嵌套连接。为了代码的可读性和性能的提升，一个循环即可解决以上问题。  
+    + break 和 continue
+    暨 中断 和 继续。 
+      ```
+      flag = True
+      counter1 = 0
+      counter2 = 0
+      while (flag):
+          counter1 += 1
+          if counter1 % 10 == 0:
+              continue
+          counter2 += 1
+          if counter1 == 101:
+              break
+      print(counter1)
+      print(counter2)
+      ```
+      不难看出，例子中 **while** 本来是一个无限循环，每次循环 **counter1** 和 **counter2** 本来都会加一，但是由于 **counter1** 为10的倍数是，**continue** 使程序直接跳到下一次循环，**counter2** 在本次循环中没有加一。所以每十次循环 **counter2** 就要比 **counter1** 少加一次一。此外当 **counter1** 增长到101时循环被 **break** 强制终端，打印出结果 ```101``` 和 ```91```
+3. 函数
+  函数的性质和数学中函数类似，f(x) = x + 1 那么 f(2) 就等于 3。所以函数可以理解成一个计算公式或者一种方法。当我们使用这种方法时会得到结果或者触发事件。
+  + def 和 return
+    def - define 定义一个函数， def + 函数名 + ( + 参数 + ): + 函数内容。```def myFunction():```， 可以不加参数。   
+    return - 返回一个值，return + 一个值。 无值时，表示退出这个函数。
+  + 传参
+    ```
+    def checkBill(fee, tax, tips):
+        print(fee + tax + tips)
+
+
+    checkBill(200, 20, 10)   # 必须传参 - 输入的参数顺序，个数 与定义中一致
+    checkBill(tax=20, fee=200, tips=10)   #关键字传参 - 顺序可不一致，个数必须一致
+    ```
+  有的时候我们希望在多数情况下某个参数具有默认值，只有传了这个参数，参数值才会改变。那么只要在接收方也就是函数中设置就可以了
+
+    ```
+    def checkBill(fee, tax, tips=15):
+        print(fee + tax + tips)
+
+
+    checkBill(tax=20, fee=200)   #235
+    checkBill(200, 20, 10)       #230
+    ```
+  有事我们可能不确定要传几个参数，我们可以用*或者**来定义参数，参数会以元组或字典的形式被传入。
+
+    ```
+    tax = 20
+
+
+    def checkBill(fee, *tips):
+        sumTips = 0
+        for item in tips:
+            sumTips += item
+        print(fee + tax + sumTips)
+
+
+    def checkBill2(*tips, fee):
+        sumTips = 0
+        for item in tips:
+            sumTips += item
+        print(fee + tax + sumTips)
+
+
+    john = 2
+    tim = 3
+    ada = 2
+    checkBill(200, john, tim, ada)
+    checkBill2(john, tim, ada, fee=200)
+    ```
+
+    函数中可以调用已经定义过的变量 **tax**， 也可以在被定义之后随意调用
+
+  + 匿名函数lambda
+    匿名函数只能写在一行内，且最多支持三元表达(条件? True的执行 : False的执行 ```print('Excellent' if score > 90 else 'Still Good') ```)。可以接受传参，但不能调用它函数以外的参数
+    ```
+    tax = 20
+
+
+    def checkBill(fee, *tips):
+        sum = lambda item, total: total + item
+        sumTips = 0
+        for item in tips:
+            sumTips = sum(item, sumTips)
+        print(fee + tax + sumTips)
+
+
+    checkBill(200, 2, 3, 2)
+    ```
+  掌握了函数的基本用法，我们来回溯一下图书查询工具。利用函数，我们按功能把代码放在一个个函数中，进行分割，需要的时候再去执行这个功能。我们可以把之前的查询功能放在一个函数中，再定义一个添加图书的功能。
+
+  ```
+  #  简易图书查找 v0.4
+  bookList = ['GAME OF THRONES', 'THE HUNGER GAMES', 'HARRY POTTER']
+
+
+  def showMenu():
+      print('''
+          Please enter following number to choose functions:
+          1. Search a book
+          2. Add a book to the list
+          3. Exit
+      ''')
+      index = input('请输入\n')
+      checkIndex(index)
+
+
+  def checkIndex(index):
+      if index == '1':
+          searchByName()
+      elif index == '2':
+          addBook()
+      elif index == '3':
+          return
+      else:
+          showMenu()
+
+
+  def searchByName():
+      bookName = input('请输入要查找的书名！(输入exit返回上一级)\n')
+      while bookName.lower() != 'exit':
+          if bookName.upper() in bookList:
+              print('You found ' + bookName.upper())
+          elif bookName:
+              print('No this book')
+          bookName = input('请输入要查找的书名！(输入exit返回上一级)\n')
+      else:
+          print('Exited')
+          showMenu()
+
+
+  def addBook():
+      bookName = flag = input('请输入要添加的书名！(批量添加用逗号隔开, 输入exit返回上一级)\n')
+      if flag.lower() != 'exit':
+          books = bookName.split(',')
+          nameString = ''
+          for item in books:
+              nameString += '《' + item + '》'
+          flag = input('您要添加的是' + nameString.upper() + '对吗？ Y/N (输入exit返回上一级)\n')
+          if flag.lower() == 'y':
+              add(books)
+              sum = lambda alist: len(alist)
+              print('You have ' + str(sum(bookList)) + ' books in the list!')
+              addBook()
+          elif flag.lower() == 'exit':
+              showMenu()
+          else:
+              addBook()
+      else:
+          showMenu()
+
+
+  def add(books):
+      for book in books:
+          bookList.append(book)
+
+
+  showMenu()
+
+  ```
+  为了更好的体现我们所学习到的知识，这段代码使用了很多不必要的循环和函数。我们可以看出，程序是由**showMenu** 这个函数发起的。**checkIndex** 起着导航的作用，类似于 C语言中 **switch** 方法。我们可以看出，通过对函数自身的调用，也可以创造循环。在自调用中**if。。。else** 可以起到和 **continue**、**break** 一样的作用。我们可以通过更多系统函数和判断条件来完善以上的代码，修复bug。这需要我们不断的进行测试和调试。
+
+  
+4. 数据结构
+5. 模块
+6. 输入与输出
 #### 2.1.4. Python 中级语句
 1. 文件
 2. 类
