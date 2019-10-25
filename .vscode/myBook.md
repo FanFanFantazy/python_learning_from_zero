@@ -186,11 +186,22 @@ Congratulation!我们已经成功运行了第一个Python程序。
       print('May I have ', end='')
       print('a cup of tea, ', end='')
       print('please!')
+
       ```
       暨打印出
       ```
       May I have a cup of tea, please!
       ```
+
+      格式化字符串 **format()** 使我们可以定义好一个模板，只要把对应的空填上就可以得到我们需要的字符串了。我们可以靠 **{}** 来确定变量的位置。
+      ```
+      lunch = 'Lunch list: {}, {} and {drink}。'
+      mainCourse = 'LambSteek'
+      salad = 'Tomato'
+      wine = 'Lafite'
+      print(lunch.format(mainCourse, salad, drink=wine))
+      ```
+
     + : - 代码组的一部分，标识下面缩进内容属于该方法
       ```
       me = 'hungry'
@@ -213,7 +224,12 @@ Congratulation!我们已经成功运行了第一个Python程序。
     import sys
     print(sys.argv)
     ```
-    两个例子效果相同，此处我们引用了系统模块中的一个方法叫argv（argv可以理解为python脚本的输入参数列表）
+    两个例子效果相同，此处我们引用了系统模块中的一个方法叫argv（argv可以理解为python脚本的输入参数列表）。一个模块下可能会出现很多函数方法的情况，我们可以使用```dir(模块名)```的方法来查看，这个文件下所有方法的名。  
+    我们也可以自己定义一个包，作为被引用模块的文件夹。一个包中可以包括过多个子包，每个包中都需要定义一个__init__.py文件来做初始化。每个最小的包下可以包括多个模块文件。每个模块文件可以包括多个方法。我们会在后续的实例中看到很多这样的用法。
+
+    <img src = '../mdSrc/packageModuleFunc.png' width='300px'>
+
+
 2. 变量和赋值  
     + 变量 - 可以变化的量，除保留字符外任意命名。对大小写敏感暨区分大小写。一般遵守驼峰式命名。如```myPhone、applePie、 johnSmith```
     + = - 赋值暨等号右侧的值赋给左侧变量
@@ -327,8 +343,35 @@ Congratulation!我们已经成功运行了第一个Python程序。
 
       #得到:['Tim', 'John', 'Lee']
       ```
+      列表作为最常用的数据结构性质比较特殊。因为列表是可以被修改的，所以Python本身提供了许多对数组操作的方法
+
+        |方法|描述|
+        -|-|-
+        .append(X)|尾部添加X
+        A.extend(B)| A列表扩充B列表内容
+        .insert(i, X) | 在第i位添加X
+        .remove(X) | 删除位X的第一个元素
+        .pop(i) | 移除第i位元素，不填则移除最后一位。并返回被移除的元素
+        .clear() | 清空列表
+        .index(X) | X的位置
+        .count(X) | X出现的次数
+        [.sort()](https://www.runoob.com/python/att-list-sort.html) | 排序
+        .reverse() | 倒过来
+        .copy() | 浅复制
+
+        ```
+        #  浅复制的只观结果
+        list = [1, 2, 3, 4]
+        b = list.copy()
+        c = list
+        list.append(5)
+        print(b)     #   [1, 2, 3, 4] 
+        print(c)     #   [1, 2, 3, 4, 5]
+        ```
+        + 为了节省空间，变量和变量值是对应关系的。同一值的的不同变量可能对应同一个变量值。这个变量值存储的地方会有一个地址。我们可以想象为 在调用 **list** 时，**list**根据他的地址去找到存储器中的值**[1, 2, 3, 4]** 。**c** 等于 **list**，只是他们两个都共用一个地址去取值。复制可以理解为复制出来一份值放在一个新地址上，**b** 调用的是新地址上的数据。因此list发生变化，b不会受影响。   
+
     + Tuple（元组）
-      与列表类似，区别是元组中的元素不可修改，用 **()**包裹
+      与列表类似，区别是元组中的元素不可修改，用 **()** 包裹
     + Set（集合）  
       集合（set）是由一个或数个形态各异的大小整体组成的，构成集合的事物或对象称作元素。用 **{}** 包裹。注意，在创建空集合是需要使用 ```set()```, 而不是 ```{}```。与数学上的集合相似，集合中元素是无序且会自动去重，其运算方式也是符合数学逻辑的。
       ```
@@ -649,8 +692,8 @@ Congratulation!我们已经成功运行了第一个Python程序。
 
     函数中可以调用已经定义过的变量 **tax**， 也可以在被定义之后随意调用
 
-  + 匿名函数lambda
-    匿名函数只能写在一行内，且最多支持三元表达(条件? True的执行 : False的执行 ```print('Excellent' if score > 90 else 'Still Good') ```)。可以接受传参，但不能调用它函数以外的参数
+  + 匿名函数lambda  
+    匿名函数只能写在一行内，且最多支持三元表达(条件? True的执行 : False的执行 ```print('Excellent' if score > 90 else 'Still Good') ```)。可以接受传参，但不能调用它函数以外的参数。匿名函数在新的语法中不建议使用，有可能会出现警告提示。
     ```
     tax = 20
 
@@ -665,6 +708,7 @@ Congratulation!我们已经成功运行了第一个Python程序。
 
     checkBill(200, 2, 3, 2)
     ```
+  
   掌握了函数的基本用法，我们来回溯一下图书查询工具。利用函数，我们按功能把代码放在一个个函数中，进行分割，需要的时候再去执行这个功能。我们可以把之前的查询功能放在一个函数中，再定义一个添加图书的功能。
 
   ```
@@ -740,13 +784,33 @@ Congratulation!我们已经成功运行了第一个Python程序。
 
   
 4. 数据结构
-5. 模块
-6. 输入与输出
+  + 推导式
+    对列表操作时我们可以直接使用for。。if。。的形式来快速对每一个元素进行格式化的修改。
+    ```
+    billList = [25, 125, 88, 90]
+    billWithTaxList = [round(x * 1.15 if x > 100 else x, 2) for x in billList if x > 50]
+    print(billWithTaxList)
+    ```
+    for之前为三元表达式，我们假设x大于100是要加15%的税。for后面的 为for循环条件，遍历整个 **billList** 。且 x需大于50。结果为```[143.75, 88, 90]```   
+
+    同样我们也可以在对集合和字典也可以进行同样的操作, 二者都是无序的
+    ```
+    billList = {25, 125, 88, 90}
+    billWithTaxList = {round(x * 1.15 if x > 100 else x, 2) for x in billList if x > 50}
+    print(billWithTaxList)
+    #  {88, 90, 143.75}
+    ```
+    ```
+    billList = {'light': 25, 'water': 125, 'food': 88, 'cloth': 90}
+    billWithTaxList = {x: round(billList[x] * 1.15 if billList[x] > 100 else billList[x], 2) for x in billList if billList[x] > 50}
+    print(billWithTaxList)
+    #  {'water': 143.75, 'food': 88, 'cloth': 90}
+    ```
+
 #### 2.1.4. Python 中级语句
-1. 文件
-2. 类
-3. 标准库
-4. 错误与异常
+1. 类
+2. 标准库
+3. 错误与异常
 ---
 ## 3.	简易的人脸识别
 ---
