@@ -285,7 +285,7 @@ Congratulation!我们已经成功运行了第一个Python程序。
       print(ageSet1 & ageSet2)   # {33, 26, 28}
       print(ageSet1 ^ ageSet2)   # {32, 24, 25, 27, 29, 30}
       ```
-    + Dictionary（字典）
+    + Dictionary（字典）   
       字典可以想象成是一种key-value形式的无序集合，用 **{}** 包裹，也可以用```dict()````定义。和现实中的字典相似，要找到一个字(value)，首先我们要知道一个拼音或者偏旁部首(key)。在一个字典中key值是唯一的，因此通过一个key就必定能找到一个value，即使是空值。
       ```
       foodMenu = {
@@ -297,6 +297,15 @@ Congratulation!我们已经成功运行了第一个Python程序。
       print(foodMenu.values())  #  dict_values([['salad', 'bread', 'oliver'], ['lambShank'], 'teaCake'])
       ```
       和列表相似，字典也可以进行嵌套。为字典增加一个新key可以直接写为```foodMenu['drink'] = 'houseAle'```。同时字典具备 clear(), keys(), values()这样的内置函数。  
+
+      直接移除字典中key的方式有一下两种：
+
+        符号 |  例子
+        -|-
+        del | ```del menu['drink']```, key 不存在，会报错 
+        .pop() | ```menu.pop('drink')```, key 不存在，不会报错 
+
+
 4. 数据转换  
     参考[菜鸟教程](https://www.runoob.com/python3/python3-data-type.html)   
     常用方法：
@@ -696,12 +705,239 @@ Congratulation!我们已经成功运行了第一个Python程序。
     ```
 
 #### 2.2.4. Python 中级语句
-1. 类
-2. 标准库
-3. 错误与异常
+1. 对文件的基本操作
+  制作Python应用时，可能会涉及到对文件的读写，常见的时生成Excel报表。
+  + 打开   
+    完整语句 ```open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None)```。基本使用```open(file, mode='r')``
+    |参数 |描述|  
+    |---------|---------|
+    |file | 文件路径|
+    |mode | 打开模式|
+    |buffering | 设置缓冲|
+    |encoding | 编码格式，一般使用utf8|
+    |errors | 报错级别|
+    |newline | 区分换行符|
+    |closefd | 传入file的参数类型|
+    |opener|暂未找到解释|
+
+    打开文件的模式有很多种，区别主要在于读写的权限和写入的光标位置
+
+    |模式 |描述|  
+    |---------|---------|
+    |t | 文本模式(默认)|
+    |x | 相当于新建，如果有重名文件会报错|
+    |b | 二进制文件|
+    |+ | 可读可写|
+    |r | 只读，光标在最前面|
+    |r+ | 可读可写，光标在最前面|
+    |w | 覆盖原文件，如果没有此文件，相当于新建|
+    |a|在尾部增加，如果没有此文件，相当于新建|
+
+    简单来记 t = text，b = binary，+ = 可读可写入， r = read， w = write，a = add
+    把 r，w，a 和 b，+ 进行组合可以产生新的模式。如```ab+```，```rb```等
+
+
+  + 其他
+
+    |方法 |描述|  
+    |---------|---------|
+    |.close() | 关闭文件，不关闭会一直占用内存，并存在安全隐患|
+    |.read() | 读取指定的字节数，未给定或为负则读取所有```file.read(10)```|
+    |.readline() | 读取行数中指定字节数|
+    |.readlines() | 读取指定行数（包括\n），行数为整数，返回列表|
+    |.write() | 写入字符串```file.write('My Python Menu')```|
+    |.writelines() | 写入字符串列表成一行```file.write(['My Python Menu', '9 a.m. - 9 p.m.'])```|
+    |file.seek(offset, whence) | 移动光标位置 offset标识偏移，whence标识从第几个算起, 0 从开头算起，1 从当前位置算起，2 从末尾算起 ```file.seek(3, 1)```。offset为负数 和 whence = 1或2 只适用于b模式，组合错误会报错|
+
+    这里只介绍了初学者比较常用的模式和方法，[其他请参考](https://www.runoob.com/python3/python3-file-methods.html)
+
+    ```
+    myFile = open('test.txt', 'w+')
+    myFile.writelines(["Today's special\n", "1.Banana cheese pie\n",
+                      "2.Licorice icecream"])  # writelines需要手动加入换行符
+    myFile.seek(0, 0)  # 由于缓冲的缘故，write 后文件中可能并没有立刻写入，直接 read为空
+    result = myFile.read()  # seek后相当于缓冲完成，可以进行读取
+    print(result)
+    myFile.close()
+    ```
+    + Os 系统文件   
+    对于初学者使用几率不高，详见 [菜鸟教程](https://www.runoob.com/python3/python3-os-file-methods.html)
+
+2. 命名空间和作用域
+    + 命名空间  
+    在编程的过程中，我们需要定义很多变量或方法。以变量举例，如果没有限制，在一个程序中使用两个重名变量，程序在调用时不、不可能知道要使用哪个。如果所有变量的名字都是唯一的，我们不仅需要绞尽脑汁地个变量起名字，还要记住所有使用过的名字以免重复。因此在程序中每个变量都有自己能被使用的范围。只要在这个范围内，保证不重复使用同一个名字就可以了。这个范围可以大到整个程序，也可以小到一个括号之内。
+      + 内置名字 - Python语言中预想定义好给我们使用的变量，全局不可重复。
+      + 全局名字 - 模块级的名字，包括import进来的名字，和在外层的名字
+      + 局部名字 - 函数或类中的名字，外层的函数定义的名字对调用的内层函数无效，对内嵌的函数有效
+      ```
+      ceo = 'Jimmy'
+
+
+      def management():
+          manager = 'Lee'
+
+          def teamA():
+              member = 'Ana'
+              print('Boss:' + ceo)
+              print('Leader:' + manager)
+              print('member:' + member)
+              support()
+          teamA()
+
+
+      def support():
+          member = 'Joe'
+          print('member:' + member)
+
+
+      management()
+
+      ```
+    + 作用域   
+      作用域是指一个变量能作用的范围，比较官方的描述是“作用域查找及限制了是否可以访问到这些命名空间内的属性(变量)”。我们可以简单理解为，在一个作用域里，我们可以找到这个作用域里最表层命名空间及其以下所有命名空间的变量。可以想象成，一个公司是一个作用域，在公司层面可以调动所有人，不管是哪个部门、哪个办公室的。同样部门是公司这个作用域里的一个子作用域，这个部门是没有能力调用其他部门的员工的。但是可以调用公司的资源（全局的变量），是可以被任意员工所调用的。
+
+      Python的作用域有四种, 由小到大依次为：
+
+      |名字 |描述|  
+      |---------|---------|
+      |Local | 包含局部变量，比如一个函数/方法内部 ```member = 'Joe'```|
+      |Enclosing | 包含了非局部也非全局的变量。比如两个嵌套函数中间的变量```member = 'Ana'```|
+      |Global | 当前脚本的最外层的变量```ceo = 'Jimmy'```|
+      |Built-in | 包含了内建的变量/关键字等|
+
+      ```
+      #  内建变量查看方式，只有导入才能使用
+      import builtins
+      dir(builtins)
+      ```
+    + 闭包   
+      在开发过程中，我们经常会听到一个词叫 **闭包** ，闭包可以理解成调用了一个定义在一个函数内的函数，以此我们可以在外层的函数间接调用内层函数中的变量。闭包有两个特点：1. 如果内层函数**innerFunc**只能被外层函数**outerFunc**调用。我们就保护了**innerFunc**中的变量不可被其他函数访问。2. 如果**outerFunc**外还有一个函数**otherFunc**调用了**outerFunc**，实际上**otherFunc**也间接调用了**innerFunc**。所以在调用完成后回收机制不会清理**outerFunc**中的变量，因为它还在被**innerFunc**调用着。
+      ```
+      def outerFunc():
+          myList = []  
+
+          def innerFunc():
+              myList.append(len(myList) + 1)  #  myList成为了一个自由变量
+              print(myList)
+          return innerFunc
+
+
+      otherFunc = outerFunc()
+
+      otherFunc()
+      otherFunc()
+      otherFunc()
+      otherFunc()
+      ```
+      我们会得到
+      ```
+      [1]
+      [1, 2]
+      [1, 2, 3]
+      [1, 2, 3, 4]
+      ```
+      可以看出，每次调用**innerFunc**的时候 myList并没有被重置为```[]```。官方原文翻译过来是 **如果一个变量在一个代码块中被使用了，却没有在这里被定义，那么他就是一个自由变量**。由此我们可以得出
+      
+      + 闭包中的引用的自由变量只和具体的闭包有关联，闭包的每个实例引用的自由变量互不干扰。
+      + 一个闭包实例对其自由变量的修改会被传递到下一次该闭包实例的调用。
+
+      ````
+      #  闭包陷阱
+      def outerFunc():
+          myList = []
+          for i in range(0, 4):
+              def innerFunc():
+                  return len(myList) + 1
+              myList.append(innerFunc())
+          return myList
+
+
+      otherFunc = outerFunc()
+
+      print(otherFunc)
+      print(otherFunc)
+      print(otherFunc)
+      print(otherFunc)
+      ````
+      我们会得到
+      ```
+      [1, 2, 3, 4]
+      [1, 2, 3, 4]
+      [1, 2, 3, 4]
+      [1, 2, 3, 4]
+      ```
+      上面的例子就是一个典型的闭包陷阱，因为for循环过程中**i**值已经发生了改变，这个改变会影响到所有引用它的内部定义的函数。所以**outerFunc**内部定义的函数并不是闭包函数，只是一个内部定义的函数。**innerFunc**中的**myList**也不是自由变量，是个局部变量。所以闭包中不要涉及循环和会发生后续变化的变量。更多闭包的应用和特性可以参考 [这篇文章](https://www.cnblogs.com/yssjun/p/9887239.html)
+
+
+3. 类  
+  Python本身的设计就是针对于面向对象的一种编程语言。面向对象是指，一切的事物都可以被抽象和封装成一个对象(暨一块东西)。我们只需要把每一个小块弄好，再去按需调用不同的小块就可以组成一切事物。粗浅的理解，我们想要坐一辆汽车，可能需要轮子，地盘，发动机等等，每一个部件都可以看作一个大的汽车对象中的一个类或者一个函数或者一个key。过了几天，我发现资金不够了，汽车改成自行车了。轮子依然可以使用，只要传递一个小一点的参数就可以复用了。制作一个可以传参的轮子就叫封装，把轮胎，轮毂等统筹起来的过程叫做抽象。
+
+  + class - 类      
+  **具有相同属性和方法的对象的集合叫做类** 可以理解为类里的东西都有从一个共同的入口进入，尽管这个入口可以什么都不定义（不发生任何事情）。由此可见，类中至少包括两部分，一部分是公共入口所定义的参数（公共），叫做类变量。另一部分是类中的函数，也叫做方法。
+
+    ```
+    class archer:
+        arrow = 20
+
+        def attack(weappon):  # 一般情况下第一个参数为self。由于seft不是关键字，这里可以用myArrow代替方便理解
+            weappon.arrow = weappon.arrow - 1
+            return weappon.arrow
+
+
+    print(archer().attack())
+    ```
+
+  这里我们定义了一个叫弓箭手**archer**的类，具有一个基本变量**arrow**是20，和一个叫**attack** 的方法。这里我们假设一次攻击消耗一支现有的弓箭。在**print**中我们使用了**archer**类中的**attack**方法， **attach**中初始参数**weappon**默认指向整个类, 因此方法中的**weappon**中的**arrow**暨初始值20。 最终我们会的到的结果是```19```。注：很多老版的讲解中直接使用```archer.attack()``` 是不可行的。因为这样调用**attack()**时，**archer()**并没有实例化。也就是说**arrow**没有初始化。因此会找不到**weappon**中的**arrow**。可以用```archer.attack(archer())```来代替。
+  
+  **\_\_init__()** 是类中的一个特殊方法，暨在进入入口时会自动调用的方法，可以为空。后面我们会在实例中应用它。
+
+  + 继承和复写  
+  一个子类可以继承和复写父类中的方法和参数。Python中父类和子类是多对多的关系。通过继承和复写的方式，可以大量减少子类的代码量，同是把抽象的东西具象化。
+
+    ```
+    class battle:
+      hp = 0
+      cp = 0
+      weappon = 99
+
+      def __init__(self, hp, cp):
+          self.hp = hp
+          self.cp = cp
+          print(self.hp)
+          print(self.cp)
+
+      def attack(self):
+          print(self.weappon)
+
+
+    class archer(battle):
+        arrow = 0
+
+        def __init__(self, hp, cp):
+            battle.__init__(self, hp, cp)
+            
+
+        def attack(self, arrow):
+            self.arrow = arrow - 1
+            print(self.arrow)
+
+
+    archer(100, 100).attack(20)  # 先要实体化archer(),进而调用attack()
+    ```
+    这里我们可以看出**archer**继承了父类**battle**中的初始化方法。输入血量和魔法量，直接打印出来。而**attack()**方法被重写了。调用父类中**attach()** 会打印初始值```99```。而**archer**中是弓箭数减一，且弓箭数为输入参数```20```。
+
+  + 私有  
+  \_\_ 参数或方法前有双下划线代表私有。暨不能被外部调用或者重写，只能内部方法调用。
+  + 专有方法和重载   
+  [可参考](https://www.cnblogs.com/c-x-a/p/10918217.html) 和 [菜鸟教程](https://www.runoob.com/python3/python3-class.html)
+
+
+    
+
+4. 标准库
+5. 错误与异常
 ---
 
-# 未完待续！！！！
 
 ---
 [上一章](./chapter1.md)-----[主页](../README.md) ----- [下一章](./chapter3.md)
