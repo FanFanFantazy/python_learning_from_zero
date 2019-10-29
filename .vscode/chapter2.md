@@ -934,9 +934,106 @@ Congratulation!我们已经成功运行了第一个Python程序。
 
     
 
-4. 标准库
+4. 标准库   
+  为了方便我们开发，Python提供了许多标准库供我们直接调用，这样我们就不用去造每一个轮子了。下面介绍几个最常用的模块。
+  
+    |模块名 |描述|  
+    |---------|---------|
+    | os | 操作系统接口，最好使用```import os```全量引入 |
+    | glob | ```glob.glob('*.py')``` 生成```.py```的文件列表|
+    | sys | 调用命令行中的一部分命令 |
+    | re| 正则匹配，根据正则表达式，过滤字符串的一些方法 |
+    | math | 底层函数库，如求正余弦，指对数等 | 
+    | urllib.request |互联网访问，最常用的收发数据，邮件发送等|
+    | datetime |日期时间的计算和格式化|
+    | zlib |压缩数据成**zlib**，**gzip**，**bz2**，**zipfile**，以及 tarfile格式|
+    | timeit |小范围的时间记录，主要用于性能测试|
+    | doctest/unittest | 测试模块 doctest可以检查代码一致性，unittest可以检查结果一致性（独立引擎）|
+  
+    对于大型的模块 ```dir()``` 和 ```help()``` 函数非常有用。接下来我们来看一个例子，例子中无目的的导入了几个模块，目的在于简单的了解一下他们的用法
+
+    ```
+    import doctest
+    import sys
+    import time
+    from math import log2, trunc
+    import urllib.request
+
+
+    def testRequest():
+        '''
+        >>> print(urllib.request.urlopen('https://www.baidu.com', data=None).getcode())
+        200
+        '''
+
+
+    def getFormatTime():
+        before = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) #当前时间格式化成YYYY-mm-dd HH:MM:SS的格式
+        time.sleep(2) # 暂停2秒
+        after = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+        print('startTime: %s endTime: %s' % (before, after))
+        return before, after #  返回多个参数时，收到的是一个tuple元组
+
+
+    def calcTimeLogTwo(before, after):
+        before = time.strptime(before, "%Y-%m-%d %H:%M:%S")
+        after = time.strptime(after, "%Y-%m-%d %H:%M:%S")
+        span = int(time.mktime(after)) - int(time.mktime(before)) #  mktime 暨make time 把格式化后的时间转换为时间戳的形式
+        print('logRes: %s' % (trunc(log2(span))))
+
+
+    if __name__ == "__main__":
+        print(doctest.testmod()) # doctest需要放在主程序__main__中
+        formatTime = getFormatTime()
+        calcTimeLogTwo(formatTime[0], formatTime[1])
+        sys.exit() #  退出程序
+
+    ```
+    + 时间戳 - 是表示唯一时间的字符串，为从格林威治时间到当前时间所差的秒数，被广泛应用在记录数据的过程中，表示时间。
+    +  doctest 会自动检查代码中```>>> ```标识，和命令行相同```>>> ```的下一行表预期执行结果。doctest验证次行的执行结果是否与预期的一样。
+    + urlopen 为一种**POST**请求，其返回结果可被读取（详细介绍将出现在爬虫案例中）
+    + getcode 为获取请求返回的编码，**200**表请求正常；4开头的编码为客户方错误，如**404**；5开头的为服务器错误，如**500**。当然返回200只是表明我们的请求被接受到了，传过去的参数没有运行出问题。至于我们是不是的到了想要的结果，还是不能单靠编码来确定的。
+    + ```'%m' % ()``` 的形式是一种老式的格式化字符串的方式，正如我们之前讲过的，现在用 **{}** 来代替
+
+
 5. 错误与异常
----
+    + 语法错误 - 一般会提示在解析器中，我们可以通过安装VS Code的插件来辅助我们自动修改一些简单的语法错误。
+    + 异常 - 通常为运行过程中发生的错误。异常在不做特殊处理的时候会主动阻断程序运行。会抛出例如：**TypeError**，**ZeroDivisionError** 等。
+
+    因此，我们在可能需要在发生异常的位置需要添加异常处理。我们可以使用
+    ```
+    try:
+      Execution1
+    except ErrorType1:
+      Execution2
+    ```
+    的形式来提示用户，或跳过异常。意为，尝试执行**Execution1**，如果没有异常，执行完毕暨结束。如果发生**ErrorType1**的异常，那么执行**Execution2**。如果不确定错误类型种类**ErrorType1**可省略，这样做会带来语法错误提示。
+
+    有时你会见到 ```except``` 后还有一个```else```。它标识在```try```中没有异常发生且执行过后再执行。
+
+    同时，我们也可能会需要主动抛出一个异常信息，此时我们可以用到```raise ErrorType1('Comment1')```。**raise**后必须要跟一个异常类型。我们可以定义一个类或继承一个类来作为自定义异常类型。
+
+    有时，无论是否有异常我们都行让程序走下去。我们可以在**try**和所有的**except**中都写一遍后面要执行的东西。但是这样会增加代码的冗余，修改起来也不方便。因此Python提供了一个出口叫```finally:```为我们处理这种情况.**finally**需要写在比**else**更后面的位置。那么无论结果是怎么样的，我们都会在最后执行一下**finally**中的代码。
+
+    ```
+    def splitBill(cost, people):
+    each = 0
+    try:
+        each = cost / people
+    except TypeError:
+        print('Cost and people must be numbers')
+    else:
+        print('You should pay %.2f GBP' % (each)) # %.2f 为小数保留2位
+    finally:
+        print('Calcu Finished!')
+
+
+    splitBill(1, 3)
+    ```
+
+    基础的Python语法我们可以先了解到这里，接下来我们来看一个建议的人脸试别程序，看一下Python的强大功能和效率。
+
+
 
 
 ---
