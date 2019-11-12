@@ -97,10 +97,67 @@ waitKey()与waitKey(0)代表窗口无线等待，直到有按键按下。waitKey
 
 ```cv2.destroyAllWindows()``` 表示关闭所有窗口，释放内存。
 
-我们可以通过一些简单的判断条件来对眼部的方框和脸部方框进行关联，从而可以在即使把眼部的minSize()设置的很小的情况也不框出太多的错误方框。比如，我们可以限制眼部方框的坐标要在脸部方框之内。
+我们可以通过一些简单的判断条件来对眼部的方框和脸部方框进行关联，从而在即使把眼部的minSize()设置的很小的情下况也不框出太多的错误方框。比如，我们可以限制眼部方框的坐标要在脸部方框之内。[可参见]("./imgFaceDetect.py")
+
+#### 1.2 视频人脸检测
+
+视频人脸检测和图片人脸检测的原理一致，我们只需要把视频中每一帧或几帧中选择一帧进行图片人脸检测，再展示出来，即可达到视频人脸检测的效果了。
++ 首先我们先利用上个例子中的代码做出人脸检测的方法```detectFace()```
++ 我们可以利用 **openCV** 中的 **VideoCapture()** 模块来获取电脑摄像头的图像 ```videoCapture()```括号中的数字表示要使用哪个计算机摄像头，只有一个摄像头时为```videoCapture(0)``` 同样括号中我们也可以添加视频的路径，这样**videoCapture**就会去读取此视频。关于videoCapture的更多配置和方法[可参考](https://docs.opencv.org/4.0.0/d8/dfe/classcv_1_1VideoCapture.html#a57c0e81e83e60f36c83027dc2a188e80)
+
++ 我们可以利用一个while循环来不间断的读取摄像头返回的视频 -> 使用 ```detectFace()``` -> 展示图片。
++ 在调试的过程中，我发现在物体运动的过程中，识别经常会抛出异常，那么我们为了能够顺利识别出运动的人脸，可以在抛出这种异常时不阻断程序运行。
++ 我们可以设置一个判断条件来作为程序的开关。当达到此条件时，程序关闭。例子中时以按下“q”键为关闭信号的。
++ 在程序完全结束之前我们一定不要忘记关闭摄像头，并且释放资源
+
+    ```
+    # coding=utf-8
+
+    import cv2
+    faceClassifier = cv2.CascadeClassifier(
+        r"./openCv/opencv/data/haarcascades/haarcascade_frontalface_default.xml")
+    eyesClassifier = cv2.CascadeClassifier(
+        r"./openCv/opencv/data/haarcascades/haarcascade_eye_tree_eyeglasses.xml"
+    )
+
+    colorSet = [(0, 191, 255), (255, 191, 0)]  # 定义矩形颜色 - DeepSkyBlue1
 
 
+    def detectFace(img):
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faceRects = faceClassifier.detectMultiScale(
+            gray, scaleFactor=1.2, minNeighbors=3, minSize=(80, 80))
 
+        eyesRects = eyesClassifier.detectMultiScale(
+            gray, scaleFactor=1.1, minNeighbors=3, minSize=(15, 15))
+
+        for faceRect in faceRects:  # 框出每一张人脸
+            x, y, w, h = faceRect
+            # 框出人脸
+            cv2.rectangle(img, (x, y), (x + h, y + w), colorSet[0], 2)
+
+        for eyesRect in eyesRects:  # 框出每一只眼睛
+            x, y, w, h = eyesRect
+            # 框出眼睛
+            cv2.rectangle(img, (x, y), (x + h, y + w), colorSet[1], 2) 
+        cv2.imshow("Image", img)
+
+
+    cap = cv2.VideoCapture(0)
+    while (1):  # 逐帧显示
+        ret, img = cap.read()
+        try:
+            detectFace(img)
+        except BaseException:
+            continue
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    cap.release()  # 释放摄像头
+    cv2.destroyAllWindows()  # 释放窗口资源
+    ```
+
+
+我们在看openCV 的材料时会经常看到```cv2.waitKey(1) & 0xFF == ord('q')```这样的写法来获取用户按键操作的。其意思为：**0xff** 是一个16进制的数，转换成二进制就 **1111 1111** 占八个位，这样和waitKey()进行与运算后，就将其八位之前的所有数都变成了0。**ord('q')**是q转换成ASCII码值，和刚刚算出来的后八位进行比较。因此我们可以获得用户的按键信息从而控制。
 
 ---
 
