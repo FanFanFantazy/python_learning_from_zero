@@ -159,6 +159,37 @@ waitKey()与waitKey(0)代表窗口无线等待，直到有按键按下。waitKey
 
 我们在看openCV 的材料时会经常看到```cv2.waitKey(1) & 0xFF == ord('q')```这样的写法来获取用户按键操作的。其意思为：**0xff** 是一个16进制的数，转换成二进制就 **1111 1111** 占八个位，这样和waitKey()进行与运算后，就将其八位之前的所有数都变成了0。**ord('q')**是q转换成ASCII码值，和刚刚算出来的后八位进行比较。因此我们可以获得用户的按键信息从而控制。
 
+#### 1.3 视频人脸检测性别
+
+除了使用openCv已有的模型进行人脸的识别，我们可以引入一些训练好的数据模型来扩展我们的功能。这个案例中，我们可以体验一下检测视频中出现人的性别。
+
+1. 首先我们需要安装**TensorFlow** 的包。在terminal中输入```pip install tensorflow``` 点击回车就可以安装python下的TensorFlow了。
+
+**TensorFlow** 
+
+
+#### 1.4 训练一个模型
+##### 1.4.1 Keras  
+Keras 是一个用 Python 编写的高级神经网络 API，它能够以 TensorFlow, CNTK, 或者 Theano 作为后端运行。Keras 的开发重点是支持快速的实验。能够以最小的时延把你的想法转换为实验结果，是做好研究的关键。[来自官方文档](https://keras.io/zh/)
+
+Keras 的适用范围： 
++ 允许简单而快速的原型设计（由于用户友好，高度模块化，可扩展性）。
++ 同时支持卷积神经网络和循环神经网络，以及两者的组合。
++ 在 CPU 和 GPU 上无缝运行。
+
+Keras 的模块结构图：
+<img src= "../mdSrc/kerasModelStruct.png" width="800"></img>
+
+
+Keras 神经网络结构图：
+<img src = "../mdSrc/kerasNeuralNetworkModel.png">
+
+**以上两图均来自于网络**
+
+
+
+
+
 ---
 
 ```

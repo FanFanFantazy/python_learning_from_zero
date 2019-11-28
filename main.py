@@ -17,7 +17,7 @@ def detectFace(img):
                                              scaleFactor=1.2,
                                              minNeighbors=3,
                                              minSize=(70, 70))
-    
+
     color = (115, 233, 86)
 
     for (x, y, w, h) in faces:
